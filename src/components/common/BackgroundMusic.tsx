@@ -1,8 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
+import WakeVolumeSlider from './WakeVolumeSlider.tsx';
 
 const BackgroundMusic = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
+  const [volume, setVolume] = useState(42);
+
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.volume = volume / 100;
+  }, [volume]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -46,6 +52,9 @@ const BackgroundMusic = () => {
         </span>
         <span>{playing ? '音乐中' : '播放音乐'}</span>
       </button>
+      <div className='music-volume-popover'>
+        <WakeVolumeSlider value={volume} onChange={setVolume} />
+      </div>
     </>
   );
 };

@@ -321,6 +321,81 @@ h6 {
   transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
 }
 
+.music-volume-popover {
+  position: fixed;
+  right: 22px;
+  bottom: 69px;
+  z-index: 1200;
+  width: 190px;
+  padding: 10px 12px;
+  border: 1px solid rgba(184, 255, 101, 0.22);
+  border-radius: 10px;
+  background: rgba(7, 12, 12, 0.84);
+  backdrop-filter: blur(12px);
+}
+
+.wake-volume {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--text-primary);
+}
+
+.wake-volume-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  height: 30px;
+  gap: 3px;
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+.wake-volume-track:focus-visible {
+  outline: 1px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+.wake-volume-bar {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  height: var(--bar-height);
+  min-width: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.wake-volume-bar.is-active {
+  background: var(--color-accent);
+}
+
+.wake-volume-track.is-dragging .wake-volume-bar {
+  transform: scaleY(1.08);
+}
+
+.wake-volume-fill {
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  top: 50%;
+  height: 2px;
+  transform: translateY(-50%);
+  background: rgba(184, 255, 101, 0.35);
+  pointer-events: none;
+}
+
+.wake-volume-value {
+  min-width: 30px;
+  color: rgba(238, 246, 237, 0.7);
+  font-family: var(--font-heading);
+  font-size: 0.68rem;
+  text-align: right;
+}
+
 .music-toggle:hover,
 .music-toggle.is-playing {
   border-color: var(--color-accent);
@@ -361,6 +436,12 @@ h6 {
     right: 12px;
     bottom: 12px;
     padding-inline: 11px;
+  }
+
+  .music-volume-popover {
+    right: 12px;
+    bottom: 58px;
+    width: 174px;
   }
 }
 
