@@ -321,6 +321,11 @@ h6 {
   transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
 }
 
+.music-toggle,
+.music-volume-popover {
+  box-sizing: border-box;
+}
+
 .music-volume-popover {
   position: fixed;
   right: 22px;

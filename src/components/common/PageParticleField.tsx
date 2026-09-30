@@ -40,6 +40,7 @@ const PageParticleField = ({ variant }: { variant: PageParticleVariant }) => {
     const colorScale = chroma.scale(config.colors).mode('lch');
     const count = 760;
     const positions = new Float32Array(count * 3);
+    const basePositions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const seeds = new Float32Array(count);
     const pointSizes = new Float32Array(count);
@@ -48,8 +49,11 @@ const PageParticleField = ({ variant }: { variant: PageParticleVariant }) => {
       positions[i3] = (Math.random() - 0.5) * 15;
       positions[i3 + 1] = (Math.random() - 0.5) * 9;
       positions[i3 + 2] = (Math.random() - 0.5) * 6 - 1.6;
+      basePositions[i3] = positions[i3];
+      basePositions[i3 + 1] = positions[i3 + 1];
+      basePositions[i3 + 2] = positions[i3 + 2];
       seeds[i] = Math.random() * Math.PI * 2;
-      pointSizes[i] = 0.45 + Math.random() * 1.45;
+      pointSizes[i] = 0.28 + Math.random() * 0.72;
       const color = new THREE.Color(colorScale(Math.random()).hex());
       colors[i3] = color.r;
       colors[i3 + 1] = color.g;
@@ -90,18 +94,18 @@ const PageParticleField = ({ variant }: { variant: PageParticleVariant }) => {
     scene.add(points);
 
     const geometry = config.shape === 'octa'
-      ? new THREE.OctahedronGeometry(0.13, 0)
+      ? new THREE.OctahedronGeometry(0.07, 0)
       : config.shape === 'ring'
-        ? new THREE.TorusGeometry(0.13, 0.035, 6, 12)
+        ? new THREE.TorusGeometry(0.07, 0.018, 6, 12)
         : config.shape === 'diamond'
-          ? new THREE.TetrahedronGeometry(0.15, 0)
+          ? new THREE.TetrahedronGeometry(0.08, 0)
           : config.shape === 'hex'
-            ? new THREE.CylinderGeometry(0.14, 0.14, 0.06, 6)
+            ? new THREE.CylinderGeometry(0.075, 0.075, 0.035, 6)
             : config.shape === 'box'
-              ? new THREE.BoxGeometry(0.14, 0.14, 0.14)
-              : new THREE.IcosahedronGeometry(0.14, 0);
+              ? new THREE.BoxGeometry(0.075, 0.075, 0.075)
+              : new THREE.IcosahedronGeometry(0.08, 0);
     const shapes = new THREE.Group();
-    const shapeData: Array<{ baseY: number; speed: number; phase: number }> = [];
+    const shapeData: Array<{ baseX: number; baseY: number; baseZ: number; speed: number; phase: number }> = [];
     for (let i = 0; i < 72; i += 1) {
       const material = new THREE.MeshBasicMaterial({
         color: colorScale(i / 42).hex(),
@@ -116,7 +120,7 @@ const PageParticleField = ({ variant }: { variant: PageParticleVariant }) => {
       mesh.position.set((Math.random() - 0.5) * 14, baseY, (Math.random() - 0.5) * 5 - 1.5);
       mesh.rotation.set(Math.random() * 3, Math.random() * 3, Math.random() * 3);
       mesh.scale.setScalar(0.35 + Math.random() * 1.35);
-      shapeData.push({ baseY, speed: 0.08 + Math.random() * 0.14, phase: Math.random() * Math.PI * 2 });
+      shapeData.push({ baseX: mesh.position.x, baseY, baseZ: mesh.position.z, speed: 0.035 + Math.random() * 0.055, phase: Math.random() * Math.PI * 2 });
       shapes.add(mesh);
     }
     scene.add(shapes);
@@ -143,6 +147,17 @@ const PageParticleField = ({ variant }: { variant: PageParticleVariant }) => {
     const startedAt = performance.now();
     const render = (time: number) => {
       const elapsed = (time - startedAt) * 0.0001;
+      const positionAttribute = pointGeometry.getAttribute('position') as THREE.BufferAttribute;
+      const pointArray = positionAttribute.array as Float32Array;
+      for (let i = 0; i < count; i += 1) {
+        const i3 = i * 3;
+        const phase = seeds[i];
+        const drift = 0.06 + (i % 7) * 0.008;
+        pointArray[i3] = basePositions[i3] + Math.sin(elapsed * drift + phase) * 0.16 + Math.cos(elapsed * drift * 0.71 + phase * 1.7) * 0.08;
+        pointArray[i3 + 1] = basePositions[i3 + 1] + Math.cos(elapsed * drift * 0.83 + phase) * 0.14;
+        pointArray[i3 + 2] = basePositions[i3 + 2] + Math.sin(elapsed * drift * 0.63 + phase * 0.6) * 0.1;
+      }
+      positionAttribute.needsUpdate = true;
       points.rotation.y = elapsed * 0.1 + pointer.x * 0.035;
       points.rotation.x = pointer.y * 0.02;
       shapes.rotation.y = -elapsed * 0.12 + pointer.x * 0.04;
@@ -151,7 +166,9 @@ const PageParticleField = ({ variant }: { variant: PageParticleVariant }) => {
         const data = shapeData[index];
         child.rotation.x += 0.0007 + (index % 5) * 0.00012;
         child.rotation.y += 0.001 + (index % 4) * 0.00012;
-        child.position.y = data.baseY + Math.sin(elapsed * data.speed + data.phase) * 0.18;
+        child.position.x = data.baseX + Math.sin(elapsed * data.speed + data.phase) * 0.22;
+        child.position.y = data.baseY + Math.cos(elapsed * data.speed * 0.83 + data.phase) * 0.18;
+        child.position.z = data.baseZ + Math.sin(elapsed * data.speed * 0.67 + data.phase) * 0.12;
       });
       renderer.render(scene, camera);
       frame = requestAnimationFrame(render);
