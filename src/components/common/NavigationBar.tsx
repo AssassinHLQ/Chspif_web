@@ -112,8 +112,11 @@ const NavLinks = styled.div`
 
 const NavLink = styled(Link)<{ $active?: boolean; $scrolled?: boolean }>`
   position: relative;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
   color: ${(props) => (props.$scrolled ? 'var(--text-primary)' : 'white')};
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--radius-md);
   transition: all var(--transition-base);
@@ -156,6 +159,8 @@ const NavLink = styled(Link)<{ $active?: boolean; $scrolled?: boolean }>`
 
 const DropdownTrigger = styled.span<{ $scrolled?: boolean }>`
   position: relative;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
   color: ${(props) => (props.$scrolled ? 'var(--text-primary)' : 'white')};
   font-weight: 500;
   padding: var(--spacing-sm) var(--spacing-md);
@@ -246,6 +251,7 @@ const MobileMenu = styled.div<{ $open: boolean; $isDark: boolean }>`
 
 const MobileNavLink = styled(Link)<{ $active?: boolean }>`
   display: block;
+  font-family: var(--font-heading);
   color: var(--text-primary);
   font-size: 1.2rem;
   font-weight: 500;

@@ -16,6 +16,7 @@ import initI18n from './i18n/i18nConfig';
 import 'antd/dist/reset.css';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import './main.css';
+import './styles/home.css';
 
 initI18n();
 

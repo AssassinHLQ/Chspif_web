@@ -2,7 +2,11 @@ import React, { JSX } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { ReactTyped } from 'react-typed';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import useScroll from '@/hooks/useScroll.ts';
+import PageParticleField, {
+  PageParticleVariant,
+} from '@/components/common/PageParticleField.tsx';
 
 const gradientShift = keyframes`
   0% { background-position: 0% 50%; }
@@ -275,6 +279,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   transparent = false,
 }: PageHeaderProps) => {
   const { t } = useTranslation();
+  const location = useLocation();
   const { y } = useScroll();
   const innerHeight = window.innerHeight;
   const maskAOpacity = Math.max(0, 0.4 - (y / innerHeight) * 0.8);
@@ -287,8 +292,21 @@ const PageHeader: React.FC<PageHeaderProps> = ({
     window.scrollTo({ top: innerHeight, behavior: 'smooth' });
   };
 
+  const particleVariant: PageParticleVariant = location.pathname.startsWith('/join')
+    ? 'join'
+    : location.pathname.startsWith('/survival')
+      ? 'survival'
+      : location.pathname.startsWith('/member')
+        ? 'member'
+        : location.pathname.startsWith('/internal')
+          ? 'internal'
+          : location.pathname.startsWith('/openSource')
+            ? 'opensource'
+            : 'hardware';
+
   return (
     <BackgroundHeader $transparent={transparent}>
+      <PageParticleField variant={particleVariant} />
       {!transparent && <GradientOverlay />}
       {!transparent && <GridPattern />}
 
