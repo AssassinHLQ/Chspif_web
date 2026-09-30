@@ -299,6 +299,71 @@ h6 {
   color: var(--color-primary);
 }
 
+.music-toggle {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 1200;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 36px;
+  padding: 0 13px;
+  border: 1px solid rgba(184, 255, 101, 0.34);
+  border-radius: 999px;
+  background: rgba(7, 12, 12, 0.76);
+  color: var(--text-primary);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.music-toggle:hover,
+.music-toggle.is-playing {
+  border-color: var(--color-accent);
+  background: rgba(20, 35, 26, 0.9);
+  transform: translateY(-2px);
+}
+
+.music-bars {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 15px;
+}
+
+.music-bars i {
+  display: block;
+  width: 2px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--color-accent);
+}
+
+.music-toggle.is-playing .music-bars i {
+  animation: music-bar 800ms ease-in-out infinite alternate;
+}
+
+.music-toggle.is-playing .music-bars i:nth-child(2) { animation-delay: 120ms; }
+.music-toggle.is-playing .music-bars i:nth-child(3) { animation-delay: 240ms; }
+.music-toggle.is-playing .music-bars i:nth-child(4) { animation-delay: 360ms; }
+
+@keyframes music-bar {
+  from { height: 5px; }
+  to { height: 15px; }
+}
+
+@media (max-width: 600px) {
+  .music-toggle {
+    right: 12px;
+    bottom: 12px;
+    padding-inline: 11px;
+  }
+}
+
 [data-theme='dark'] ::selection {
   background: var(--color-primary);
   color: var(--text-primary);
